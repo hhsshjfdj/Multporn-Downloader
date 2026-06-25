@@ -27,6 +27,11 @@ jobs:
             libncursesw5-dev cmake ninja-build
           pip install buildozer cython
 
+      - name: Accept Android SDK licenses
+        run: |
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+          yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses || true
+
       - name: Build APK
         working-directory: apk
         run: |
