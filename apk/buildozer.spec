@@ -16,6 +16,8 @@ android.ndk = 25b
 android.sdk = 34
 android.arch = arm64-v8a
 android.allow_backup = True
+android.accept_sdk_license = True
+android.build_tools_version = 36.0.0
 android.presplash_color = #1A1A2E
 
 # 移除不必要的 gradle 依赖，避免构建冲突
