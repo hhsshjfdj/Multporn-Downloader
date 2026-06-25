@@ -1,0 +1,53 @@
+Multporn 漫画下载器 - APK 构建指南
+=====================================
+
+方法一：在自己电脑上用 Buildozer 构建（需 Linux / WSL / macOS）
+--------------------------------------------------------------
+1. 安装依赖：
+   pip install buildozer cython
+
+2. 安装 Android 构建工具（自动）：
+   buildozer init      # 首次运行
+   buildozer android debug
+
+3. APK 生成在 bin/ 目录下，传到手机安装即可。
+
+
+方法二：用 Google Colab 在线构建（推荐，无需本地环境）
+--------------------------------------------------------------
+1. 将整个 Multporn下载器_APK版 文件夹打包成 zip 上传到 Google Drive
+
+2. 打开 https://colab.research.google.com/
+
+3. 新建 Notebook，依次运行以下命令：
+
+   !pip install buildozer cython
+   
+   # 挂载 Google Drive
+   from google.colab import drive
+   drive.mount('/content/drive')
+   
+   # 解压项目
+   !unzip /content/drive/MyDrive/Multporn下载器_APK版.zip -d /content/
+   
+   # 进入目录
+   %cd /content/Multporn下载器_APK版
+   
+   # 构建 APK（约15-30分钟）
+   !buildozer android debug
+   
+   # 下载 APK
+   from google.colab import files
+   files.download('bin/*.apk')
+
+
+方法三：用 GitHub Actions 自动构建
+--------------------------------------------------------------
+fork 项目后配置 GitHub Actions workflow，推送代码自动出 APK。
+
+
+注意
+----
+- 构建需要约 4GB 磁盘空间
+- 首次构建需要下载 Android SDK/NDK（约 1-2GB），请耐心等待
+- APK 仅支持 arm64-v8a 架构（2019年后的手机均支持）
