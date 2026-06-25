@@ -20,8 +20,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y \
             git zip unzip openjdk-17-jdk \
-            autoconf libtool pkg-config \
-            libffi-dev libssl-dev \
+            autoconf libtool libtool-bin libltdl-dev \
+            pkg-config libffi-dev libssl-dev \
             python3-dev build-essential \
             zlib1g-dev libncurses5-dev \
             libncursesw5-dev cmake ninja-build
@@ -30,16 +30,19 @@ jobs:
       - name: Build APK
         working-directory: apk
         run: |
-          # Let buildozer download SDK first, then accept licenses
+          # Let buildozer download SDK first
           buildozer android debug 2>&1 | tee /tmp/build.log || true
           
-          # Accept all licenses
+          # Accept licenses with explicit sdk_root
           SDK_DIR=$HOME/.buildozer/android/platform/android-sdk
-          if [ -f "$SDK_DIR/cmdline-tools/latest/bin/sdkmanager" ]; then
-            yes | $SDK_DIR/cmdline-tools/latest/bin/sdkmanager --licenses
-          elif [ -f "$SDK_DIR/tools/bin/sdkmanager" ]; then
-            yes | $SDK_DIR/tools/bin/sdkmanager --licenses
-          fi
+          for sm in \
+            "$SDK_DIR/cmdline-tools/latest/bin/sdkmanager" \
+            "$SDK_DIR/tools/bin/sdkmanager"; do
+            if [ -f "$sm" ]; then
+              yes | "$sm" --sdk_root="$SDK_DIR" --licenses 2>/dev/null || true
+              break
+            fi
+          done
           
           # Retry build
           buildozer android debug
